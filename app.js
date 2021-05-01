@@ -1,15 +1,24 @@
 const express = require('express');
+const morgan = require('morgan');
+
+const tourRouter = require('./routes/tourRoutes');
+const userRouter = require('./routes/userRoutes');
+
 const app = express();
 
-app.get('/',(req,res)=>{
-    res.send("hey there");
-});
+// 1) MIDDLEWARES
+if(process.env.NODE_ENV ==='development'){
+    app.use(morgan('dev'));
+}
 
-app.post('/',(req,response)=>{
-    res.send("posty");
-});
-const port =3000;
+app.use(express.json());
+app.use(express.static(`${__dirname}/public`));
 
-app.listen(port,()=>{
-    console.log(`listenning on port ${port} `);
-})
+
+
+// 2) ROUTES
+
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
+
+module.exports = app;
